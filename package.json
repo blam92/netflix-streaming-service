@@ -1,0 +1,24 @@
+{
+  "name": "netflix_micro_service",
+  "version": "1.0.0",
+  "description": "The player micro-service for our Netflix architecture",
+  "main": ".eslintrc.js",
+  "scripts": {
+    "test": "echo 'set up new tests'",
+    "start": "node ./server/index.js",
+    "start-dev": "nodemon ./server/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blam92/hrsf86-thesis.git"
+  },
+  "author": "Santiago Iraola",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/blam92/hrsf86-thesis/issues"
+  },
+  "homepage": "https://github.com/blam92/hrsf86-thesis#readme",
+  "dependencies": {
+    "express": "^4.16.2"
+  }
+}
