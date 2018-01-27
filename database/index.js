@@ -14,9 +14,6 @@ for(var i = 0; i < 100; i++) {
     counter++;
     start++;
     end++;
-      // `UPDATE manifest
-      //   SET chunks = chunks + [{streamingData: ${streamingData}, start: ${start}, end: ${end}, nextChunk: ${counter + 1}}]
-      //   WHERE contentId=${i};`
   }
   start = 0;
   end = 1;
