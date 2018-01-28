@@ -1,14 +1,21 @@
 module.exports = {
   postPlays: (req, res) => {
-    res.json('post Plays');
+    res.json({
+      streamingData: 'asfnasg',
+      start: 0,
+      end: 1,
+      nextChunk: 123
+    });
   },
   patchPlays: (req, res) => {
     res.json('patch Plays');
   },
   getChunk: (req, res) => {
-    res.json('get chunk');
+    res.json({id: parseInt(req.params.chunkId), chunk: {}});
   },
   getUnfinished: (req, res) => {
-    res.json('get unfinished');
+    res.json({
+      results: [{uid: parseInt(req.query.userId), endDate: null}]
+    });
   }
 }

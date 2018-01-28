@@ -4,7 +4,7 @@
   "description": "The player micro-service for our Netflix architecture",
   "main": ".eslintrc.js",
   "scripts": {
-    "test": "mocha ./spec",
+    "test": "mocha ./spec --exit",
     "start": "node ./server/index.js",
     "start-dev": "nodemon ./server/index.js"
   },
