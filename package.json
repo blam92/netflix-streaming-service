@@ -4,7 +4,7 @@
   "description": "The player micro-service for our Netflix architecture",
   "main": ".eslintrc.js",
   "scripts": {
-    "test": "echo 'set up new tests'",
+    "test": "mocha ./spec",
     "start": "node ./server/index.js",
     "start-dev": "nodemon ./server/index.js"
   },
@@ -21,5 +21,10 @@
   "dependencies": {
     "cassandra-driver": "^3.3.0",
     "express": "^4.16.2"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "chai-http": "^3.0.0",
+    "mocha": "^5.0.0"
   }
 }

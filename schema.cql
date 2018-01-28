@@ -17,5 +17,13 @@ CREATE TABLE IF NOT EXISTS chunks (
   chunk frozen <chunk>
 );
 
+CREATE TABLE IF NOT EXISTS PLAYS (
+  id UUID PRIMARY KEY,
+  uid INT,
+  contentId INT,
+  startDate TIMESTAMP,
+  endDate TIMESTAMP,
+  secondsWatched INT
+);
 
 
