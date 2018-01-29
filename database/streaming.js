@@ -5,11 +5,20 @@ let getManifest = (client, contentId) => {
   .catch((err) => err);
 }
 
+let contentCheck = (result) => {
+  if(!result[0]) {
+    return {err: 'content not found'}
+  } else {
+    return {ok: true}
+  }
+}
+
 let getFirstChunk = (client, contentId) => {
   return getManifest(client, contentId)
     .then((result) => {
-      if(!result[0]) {
-        return {err: 'content not found'}
+      let status = contentCheck(result);
+      if(status.err) {
+        return status;
       }
       return result[0].chunks[0];
     })
@@ -17,6 +26,22 @@ let getFirstChunk = (client, contentId) => {
       return err;
     });
 }
+
+let getChunkById = (client, chunkId) => {
+  const query = 'SELECT * FROM chunks WHERE id = ?'
+  return client.execute(query, [chunkId], {prepare: true})
+  .then(result => {
+    let status = contentCheck(result.rows);
+    if(status.err) {
+      console.log('inside if chunkById', status);
+      return status;
+    }
+    return result.rows[0];
+  })
+  .catch((err) => err);
+}
+
 module.exports = {
-  getFirstChunk: getFirstChunk
+  getFirstChunk: getFirstChunk,
+  getChunkById: getChunkById
 }

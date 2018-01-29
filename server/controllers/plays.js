@@ -7,9 +7,7 @@ let postPlays = (req, res) => {
   }
   return db.postPlayRequest(contentId, userId)
   .then((results) => {
-    if(results.err) {
-      res.status(500).json(results);
-    }
+    if(results.err) return res.status(500).json(results);
     res.json(results);
   })
   .catch((err) => err);

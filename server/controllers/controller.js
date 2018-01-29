@@ -1,13 +1,12 @@
 const plays = require('./plays');
+const chunks = require('./chunks');
 
 module.exports = {
   postPlays: plays.postPlays,
   patchPlays: (req, res) => {
     res.json('patch Plays');
   },
-  getChunk: (req, res) => {
-    res.json({id: parseInt(req.params.chunkId), chunk: {}});
-  },
+  getChunk: chunks.getChunkById,
   getUnfinished: (req, res) => {
     res.json({
       results: [{uid: parseInt(req.query.userId), endDate: null}]

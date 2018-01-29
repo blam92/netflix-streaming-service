@@ -8,7 +8,7 @@ const server = require('../server/app');
 describe('Endpoints', () => {
 
   describe('GET /chunks', () => {
-    it('should return correct JSON', (done) => {
+    it('should return correct chunk', (done) => {
       chai.request(server)
       .get('/chunks/1234')
       .end((err, res) => {
@@ -16,8 +16,19 @@ describe('Endpoints', () => {
         res.status.should.eql(200);
         res.type.should.eql('application/json');
         res.body.id.should.equal(1234);
-        res.body.chunk.should.eql({});
-        // res.body.message.should.eql('hello, world!');
+        res.body.chunk.should.exist;
+        res.body.chunk.nextchunk.should.equal(1235);
+        done();
+      });
+    });
+    it('should return empty object if chunk was not found', (done) => {
+      chai.request(server)
+      .get('/chunks/1234343434343423232323232332')
+      .end((err, res) => {
+        should.not.exist(err);
+        res.status.should.eql(200);
+        res.type.should.eql('application/json');
+        res.body.should.eql({});
         done();
       });
     });

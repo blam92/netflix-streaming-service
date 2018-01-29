@@ -16,17 +16,14 @@ let postPlayRequest = (contentId, userId) => {
       }
     });
   });
+}
 
-  return plays.createNewPlay(client, contentId, userId)
-  .then((res) => {
-    if(res.ok) {
-      return streaming.getFirstChunk(client, contentId);
-    }
-  })
-  .catch((err) => err);
+let getChunkById = (chunkId) => {
+  return streaming.getChunkById(client, chunkId);
 }
 
 
 module.exports = {
-  postPlayRequest: postPlayRequest
+  postPlayRequest: postPlayRequest,
+  getChunkById: getChunkById
 }
