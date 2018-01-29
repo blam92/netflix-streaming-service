@@ -4,13 +4,15 @@ const should = chai.should();
 const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 const server = require('../server/app');
+const cassandra = require('cassandra-driver');
+const client = new cassandra.Client({ contactPoints: ['127.0.0.1'], keyspace: 'hello' });
 
 describe('Endpoints', () => {
 
   describe('GET /chunks', () => {
     it('should return correct chunk', (done) => {
       chai.request(server)
-      .get('/chunks/1234')
+      .get('/chunks/1234?playId=18593221-fd60-4e4f-9406-50fd29f5e275')
       .end((err, res) => {
         should.not.exist(err);
         res.status.should.eql(200);
@@ -21,15 +23,28 @@ describe('Endpoints', () => {
         done();
       });
     });
-    it('should return empty object if chunk was not found', (done) => {
+    it('should return error if chunk was not found', (done) => {
       chai.request(server)
-      .get('/chunks/1234343434343423232323232332')
+      .get('/chunks/1234343232332?playId=18593221-fd60-4e4f-9406-50fd29f5e275')
       .end((err, res) => {
-        should.not.exist(err);
-        res.status.should.eql(200);
+        should.exist(err);
+        res.status.should.eql(500);
         res.type.should.eql('application/json');
-        res.body.should.eql({});
+        res.body.err.should.exist;
         done();
+      });
+    });
+    it('should update play to the chunks from seconds', (done) => {
+      chai.request(server)
+      .get('/chunks/123?playId=18593221-fd60-4e4f-9406-50fd29f5e275')
+      .end((err, res) => {
+        res.status.should.eql(200);
+        const query = `SELECT * FROM plays WHERE id=18593221-fd60-4e4f-9406-50fd29f5e275`;
+        client.execute(query, {prepare: true})
+        .then((result) => {
+          result.rows[0].secondswatched.should.equal(res.body.chunk.start);
+          done();
+        })
       });
     });
   });

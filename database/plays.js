@@ -8,6 +8,16 @@ let createNewPlay = (client, contentId, userId) => {
   .catch((err) => err);
 }
 
+let updateMinutesWatchedOnPlay = (client, playId, secondsToUpdate) => {
+  const query = `UPDATE plays SET secondsWatched = ? WHERE id = ?`;
+  return client.execute(query, [secondsToUpdate, playId], {prepare: true})
+  .then((results) => {
+    return {ok: true}
+  })
+  .catch((err) => err);
+}
+
 module.exports = {
-  createNewPlay: createNewPlay
+  createNewPlay: createNewPlay,
+  updateMinutesWatchedOnPlay: updateMinutesWatchedOnPlay
 }

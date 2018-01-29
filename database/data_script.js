@@ -4,7 +4,7 @@ let counter = 0;
 let streamingData = 'asbakdjghsa3248mja9794k';
 let start = 0;
 let end = 1;
-
+//remember to update start and end as they are in SECONDS!!
 for(var i = 0; i < 100; i++) {
   fs.appendFileSync('data.cql', `INSERT INTO manifest (contentId, chunks) VALUES (${i}, []);\n`);
   for(let j = 0; j < 90; j++) {

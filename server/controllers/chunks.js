@@ -1,18 +1,28 @@
 let db = require('../../database/index');
 
-let getChunksById = (req, res) => {
+let getChunks = (req, res) => {
   const chunkId = req.params.chunkId;
-  if(!chunkId) {
-    res.status(500).json({err: 'No parameter found. Please send a valid id'});
+  const playId = req.query.playId;
+  const type = req.query.type;
+  if(!playId) {
+    res.status(500).json({err: 'No parameter found. Please send a valid playId'});
   }
-  db.getChunkById(parseInt(chunkId))
-  .then((chunk) => {
-    if(chunk.err) return res.status(500).json(chunk);
 
-    res.json(chunk);
-  });
+  if(type === 'by_seconds') {
+    // db.getChunkBySeconds()
+  } else {
+    if(!chunkId) {
+      res.status(500).json({err: 'No parameter found. Please send a valid chunkId'});
+    } else {
+      db.getChunkById(parseInt(chunkId), playId)
+      .then((chunk) => {
+        if(chunk.err) return res.status(500).json({err: 'invalid chunk Id'});
+        res.json(chunk);
+      });
+    }
+  }
 }
 
 module.exports = {
-  getChunkById: getChunksById
+  getChunks: getChunks
 }

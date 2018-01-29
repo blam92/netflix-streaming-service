@@ -33,12 +33,13 @@ let getChunkById = (client, chunkId) => {
   .then(result => {
     let status = contentCheck(result.rows);
     if(status.err) {
-      console.log('inside if chunkById', status);
       return status;
     }
     return result.rows[0];
   })
-  .catch((err) => err);
+  .catch((err) => {
+    return {err: err};
+  });
 }
 
 module.exports = {

@@ -18,10 +18,21 @@ let postPlayRequest = (contentId, userId) => {
   });
 }
 
-let getChunkById = (chunkId) => {
-  return streaming.getChunkById(client, chunkId);
+let getChunkById = (chunkId, playId) => {
+  return streaming.getChunkById(client, chunkId)
+  .then((result) => {
+    if(result.err) return result;
+    let secondsToUpdate = result.chunk.start;
+    return plays.updateMinutesWatchedOnPlay(client, playId, secondsToUpdate)
+    .then((status) => {
+      if(status.ok) {
+        return result;
+      }
+    })
+    .catch((err) => err);
+  })
+  .catch((err) => err);
 }
-
 
 module.exports = {
   postPlayRequest: postPlayRequest,

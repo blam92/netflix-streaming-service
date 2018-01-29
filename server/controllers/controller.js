@@ -6,7 +6,7 @@ module.exports = {
   patchPlays: (req, res) => {
     res.json('patch Plays');
   },
-  getChunk: chunks.getChunkById,
+  getChunk: chunks.getChunks,
   getUnfinished: (req, res) => {
     res.json({
       results: [{uid: parseInt(req.query.userId), endDate: null}]
