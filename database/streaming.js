@@ -8,6 +8,9 @@ let getManifest = (client, contentId) => {
 let getFirstChunk = (client, contentId) => {
   return getManifest(client, contentId)
     .then((result) => {
+      if(!result[0]) {
+        return {err: 'content not found'}
+      }
       return result[0].chunks[0];
     })
     .catch((err) => {

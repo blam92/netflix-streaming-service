@@ -25,13 +25,39 @@ describe('Endpoints', () => {
   describe('POST /plays', () => {
     it('should return chunk', (done) => {
       chai.request(server)
-      .post('/plays')
+      .post('/plays').send({
+        userId: 13,
+        contentId: 12
+      })
       .end((err, res) => {
         should.not.exist(err);
         res.status.should.eql(200);
         res.type.should.eql('application/json');
         res.body.start.should.equal(0);
         res.body.end.should.equal(1);
+        done();
+      });
+    });
+    it('should return err if no body was provided', (done) => {
+      chai.request(server)
+      .post('/plays')
+      .end((err, res) => {
+        res.status.should.eql(500);
+        res.type.should.eql('application/json');
+        res.body.err.should.exist;
+        done();
+      });
+    });
+    it('should return err if no content was found', (done) => {
+      chai.request(server)
+      .post('/plays').send({
+        userId: 13,
+        contentId: 1200002302302030202020202
+      })
+      .end((err, res) => {
+        res.status.should.eql(500);
+        res.type.should.eql('application/json');
+        res.body.err.should.exist;
         done();
       });
     });
