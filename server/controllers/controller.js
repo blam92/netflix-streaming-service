@@ -1,12 +1,7 @@
+const plays = require('./plays');
+
 module.exports = {
-  postPlays: (req, res) => {
-    res.json({
-      streamingData: 'asfnasg',
-      start: 0,
-      end: 1,
-      nextChunk: 123
-    });
-  },
+  postPlays: plays.postPlays,
   patchPlays: (req, res) => {
     res.json('patch Plays');
   },
