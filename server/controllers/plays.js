@@ -13,6 +13,21 @@ let postPlays = (req, res) => {
   .catch((err) => err);
 }
 
+let patchPlaysWithEndDate = (req, res) => {
+  let playId = req.body.playId;
+
+  if(!playId) {
+    res.status(500).json({err: 'Missing playId'});
+  }
+
+  return db.finishPlay(playId)
+  .then((results) => {
+    if(results.err) return res.status(500).json(results);
+    res.json(results);
+  });
+}
+
 module.exports = {
-  postPlays: postPlays
+  postPlays: postPlays,
+  patchPlaysWithEndDate: patchPlaysWithEndDate
 }

@@ -60,8 +60,15 @@ let getChunksBySeconds = (contentId, secondMark, playId) => {
   .catch((err) => err);
 }
 
+let finishPlay = (playId) => {
+  return plays.setEndDate(client, playId)
+  .then((res) => ({ok: true}))
+  .catch((err) => {err: err})
+}
+
 module.exports = {
   postPlayRequest: postPlayRequest,
   getChunkById: getChunkById,
-  getChunkBySeconds: getChunksBySeconds
+  getChunkBySeconds: getChunksBySeconds,
+  finishPlay: finishPlay
 }

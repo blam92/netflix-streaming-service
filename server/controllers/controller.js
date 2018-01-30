@@ -3,9 +3,7 @@ const chunks = require('./chunks');
 
 module.exports = {
   postPlays: plays.postPlays,
-  patchPlays: (req, res) => {
-    res.json('patch Plays');
-  },
+  patchPlays: plays.patchPlaysWithEndDate,
   getChunk: chunks.getChunks,
   getUnfinished: (req, res) => {
     res.json({

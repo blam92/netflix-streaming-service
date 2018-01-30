@@ -17,7 +17,17 @@ let updateMinutesWatchedOnPlay = (client, playId, secondsToUpdate) => {
   .catch((err) => err);
 }
 
+let setEndDate = (client, playId) => {
+  const query = `UPDATE plays SET enddate = toTimestamp(now()) WHERE id = ?`;
+  return client.execute(query, [playId], {prepare: true})
+  .then((results) => {
+    return {ok: true}
+  })
+  .catch((err) => err);
+}
+
 module.exports = {
   createNewPlay: createNewPlay,
-  updateMinutesWatchedOnPlay: updateMinutesWatchedOnPlay
+  updateMinutesWatchedOnPlay: updateMinutesWatchedOnPlay,
+  setEndDate: setEndDate
 }
