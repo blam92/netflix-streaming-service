@@ -1,3 +1,5 @@
+const CHUNK_SIZE = 1;
+
 let getManifest = (client, contentId) => {
   const query = 'SELECT * FROM manifest WHERE contentId = ?';
   return client.execute(query, [contentId], {prepare : true})
@@ -11,6 +13,10 @@ let contentCheck = (result) => {
   } else {
     return {ok: true}
   }
+}
+
+let getChunkIndexBasedOnSeconds = (seconds) => {
+  return Math.floor(seconds/CHUNK_SIZE);
 }
 
 let getFirstChunk = (client, contentId) => {
@@ -42,7 +48,20 @@ let getChunkById = (client, chunkId) => {
   });
 }
 
+let getChunkBySeconds = (client, contentId, secondMark) => {
+  return getManifest(client, contentId)
+  .then((result) => {
+    let status = contentCheck(result);
+    if(status.err) {
+      return status;
+    }
+    const index = getChunkIndexBasedOnSeconds(secondMark);
+    return result[0].chunks[index];
+  });
+}
+
 module.exports = {
   getFirstChunk: getFirstChunk,
-  getChunkById: getChunkById
+  getChunkById: getChunkById,
+  getChunkBySeconds: getChunkBySeconds
 }

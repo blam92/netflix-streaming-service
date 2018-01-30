@@ -18,6 +18,16 @@ let postPlayRequest = (contentId, userId) => {
   });
 }
 
+let updateMinutesWatched = (client, playId, secondsToUpdate) => {
+  return plays.updateMinutesWatchedOnPlay(client, playId, secondsToUpdate)
+  .then((status) => {
+    if(status.ok) {
+      return result;
+    }
+  })
+  .catch((err) => err);
+}
+
 let getChunkById = (chunkId, playId) => {
   return streaming.getChunkById(client, chunkId)
   .then((result) => {
@@ -34,7 +44,24 @@ let getChunkById = (chunkId, playId) => {
   .catch((err) => err);
 }
 
+let getChunksBySeconds = (contentId, secondMark, playId) => {
+  return streaming.getChunkBySeconds(client, contentId, secondMark)
+  .then((result) => {
+    if(result.err) return result;
+    let secondsToUpdate = result.start;
+    return plays.updateMinutesWatchedOnPlay(client, playId, secondsToUpdate)
+    .then((status) => {
+      if(status.ok) {
+        return result;
+      }
+    })
+    .catch((err) => err);
+  })
+  .catch((err) => err);
+}
+
 module.exports = {
   postPlayRequest: postPlayRequest,
-  getChunkById: getChunkById
+  getChunkById: getChunkById,
+  getChunkBySeconds: getChunksBySeconds
 }
