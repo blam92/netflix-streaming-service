@@ -26,8 +26,18 @@ let setEndDate = (client, playId) => {
   .catch((err) => err);
 }
 
+let getPlaysFromUser = (client, userId) => {
+  const query = `SELECT * FROM plays_by_user WHERE uid = ?`;
+  return client.execute(query, [userId], {prepare: true})
+  .then((result) => {
+    return result.rows;
+  })
+  .catch((err) => err);
+}
+
 module.exports = {
   createNewPlay: createNewPlay,
   updateMinutesWatchedOnPlay: updateMinutesWatchedOnPlay,
-  setEndDate: setEndDate
+  setEndDate: setEndDate,
+  getPlaysFromUser: getPlaysFromUser
 }

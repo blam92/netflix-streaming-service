@@ -66,9 +66,18 @@ let finishPlay = (playId) => {
   .catch((err) => {err: err})
 }
 
+let getPlaysFromUser = (userId) => {
+  return plays.getPlaysFromUser(client, userId)
+  .then((result) => {
+    return result;
+  })
+  .catch((err) => err);
+}
+
 module.exports = {
   postPlayRequest: postPlayRequest,
   getChunkById: getChunkById,
   getChunkBySeconds: getChunksBySeconds,
-  finishPlay: finishPlay
+  finishPlay: finishPlay,
+  getPlaysFromUser: getPlaysFromUser
 }

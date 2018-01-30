@@ -27,7 +27,25 @@ let patchPlaysWithEndDate = (req, res) => {
   });
 }
 
+let getUnfinishedPlays = (req, res) => {
+  let userId = req.query.userId;
+
+  if(!userId) {
+    res.status(500).json({err: 'Missing userId'});
+  }
+
+  return db.getPlaysFromUser(userId)
+  .then((results) => {
+    let unfinishedResults = results.filter((val) => {
+      return val.enddate === null;
+    });
+    res.json(unfinishedResults);
+  })
+  .catch((err) => err);
+};
+
 module.exports = {
   postPlays: postPlays,
-  patchPlaysWithEndDate: patchPlaysWithEndDate
+  patchPlaysWithEndDate: patchPlaysWithEndDate,
+  getUnfinishedPlays: getUnfinishedPlays
 }
