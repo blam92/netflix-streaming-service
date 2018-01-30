@@ -96,11 +96,11 @@ describe('Endpoints', () => {
         should.not.exist(err);
         res.status.should.eql(200);
         res.type.should.eql('application/json');
-        Array.isArray(res.body.results).should.be.true;
-        if(res.body.results.length) {
-          res.body.results[0].uid.should.equal(1);
-          let endDate = res.body.results[0].endDate;
-          chai.assert(endDate === null);
+        Array.isArray(res.body).should.be.true;
+        if(res.body.length) {
+          res.body[0].uid.should.equal(1);
+          let endDate = res.body[0].enddate;
+          should.equal(endDate, null);
         }
         done();
       });
