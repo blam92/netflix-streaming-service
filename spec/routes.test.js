@@ -6,13 +6,28 @@ chai.use(chaiHttp);
 const server = require('../server/app');
 const cassandra = require('cassandra-driver');
 const client = new cassandra.Client({ contactPoints: ['127.0.0.1'], keyspace: 'hello' });
+let playId = null;
 
 describe('Endpoints', () => {
+  before(function(done) {
+    chai.request(server)
+    .post('/plays').send({
+      userId: 100,
+      contentId: 100
+    }).end(() => {
+      const query = `SELECT * FROM plays LIMIT 1`;
+      client.execute(query, {prepare: true})
+      .then((result) => {
+        playId = result.rows[0].id.toString();
+        done();
+      })
+    })
+  });
 
   describe('GET /chunks', () => {
     it('should return correct chunk', (done) => {
       chai.request(server)
-      .get('/chunks/1234?playId=18593221-fd60-4e4f-9406-50fd29f5e275')
+      .get(`/chunks/1234?playId=${playId}`)
       .end((err, res) => {
         should.not.exist(err);
         res.status.should.eql(200);
@@ -25,7 +40,7 @@ describe('Endpoints', () => {
     });
     it('should return error if chunk was not found', (done) => {
       chai.request(server)
-      .get('/chunks/1234343232332?playId=18593221-fd60-4e4f-9406-50fd29f5e275')
+      .get(`/chunks/1234343232332?playId=${playId}`)
       .end((err, res) => {
         should.exist(err);
         res.status.should.eql(500);
@@ -36,10 +51,10 @@ describe('Endpoints', () => {
     });
     it('should update play to the chunks from seconds', (done) => {
       chai.request(server)
-      .get('/chunks/123?playId=18593221-fd60-4e4f-9406-50fd29f5e275')
+      .get(`/chunks/123?playId=${playId}`)
       .end((err, res) => {
         res.status.should.eql(200);
-        const query = `SELECT * FROM plays WHERE id=18593221-fd60-4e4f-9406-50fd29f5e275`;
+        const query = `SELECT * FROM plays WHERE id=${playId}`;
         client.execute(query, {prepare: true})
         .then((result) => {
           result.rows[0].secondswatched.should.equal(res.body.chunk.start);
@@ -60,7 +75,7 @@ describe('Endpoints', () => {
         res.status.should.eql(200);
         res.type.should.eql('application/json');
         res.body.start.should.equal(0);
-        res.body.end.should.equal(1);
+        res.body.end.should.equal(60);
         done();
       });
     });
