@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/blam92/hrsf86-thesis#readme",
   "dependencies": {
+    "bluebird": "^3.5.1",
     "cassandra-driver": "^3.3.0",
     "express": "^4.16.2",
     "newrelic": "^2.6.1",
