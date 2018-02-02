@@ -32,7 +32,9 @@ let getPlaysFromUser = (client, userId) => {
   .then((result) => {
     return result.rows;
   })
-  .catch((err) => err);
+  .catch((err) => {
+    return err;
+  });
 }
 
 module.exports = {

@@ -36,6 +36,9 @@ let getUnfinishedPlays = (req, res) => {
 
   return db.getPlaysFromUser(userId)
   .then((results) => {
+    if(!Array.isArray(results)) {
+      return res.status(500).json({err: 'user not found'});
+    }
     let unfinishedResults = results.filter((val) => {
       return val.enddate === null;
     });

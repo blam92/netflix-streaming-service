@@ -1,0 +1,50 @@
+config:
+  target: "http://127.0.0.1:4000"
+  phases:
+    - duration: 10
+      arrivalRate: 10
+      name: "Warm up the application"
+    - duration: 20
+      arrivalRate: 30
+      name: "Sustained max load"
+  payload:
+    - path: "users_test.csv"
+      fields:
+        - "user"
+    - path: "plays_test.csv"
+      fields:
+        - "play"
+    - path: "chunks_test.csv"
+      fields: 
+        - "chunk"
+      order: "sequence"
+    - path: "content_test.csv"
+      fields: 
+        - "content"
+scenarios:
+  - name: "Netflix user-flow"
+    flow:
+      - loop:
+        - get:
+            url: "/unfinished?userId={{user}}"
+        count: 100
+      # - post:
+      #     url: "/plays"
+      #     json:
+      #       userId: "{{user}}"
+      #       contentId: "{{content}}"
+      #     capture:
+      #       json: "$.nextchunk"
+      #       as: "nextChunk"
+      # - loop:
+      #   - get:
+      #       url: "/chunks/{{chunk}}?playId={{play}}"
+      #       # capture:
+      #       #   json: "$.chunk.nextchunk"
+      #       #   as: "nextChunk"
+      #   # - think: 10
+      #   count: 100
+      # - patch:
+      #     url: "/plays"
+      #     json:
+      #       playId: "{{play}}"

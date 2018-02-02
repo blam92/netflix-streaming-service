@@ -120,5 +120,15 @@ describe('Endpoints', () => {
         done();
       });
     });
+    it('should err when no user is found', (done) => {
+      chai.request(server)
+      .get('/unfinished?userId=038383849000')
+      .end((err, res) => {
+        res.status.should.eql(500);
+        res.type.should.eql('application/json');
+        res.body.err.should.exist;
+        done();
+      });
+    });
   });
 });
