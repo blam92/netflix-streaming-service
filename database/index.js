@@ -14,21 +14,8 @@ redisClient.on('error', (err) => {
   console.log('Redis Error: ', err);
 });
 
-redisClient.hmsetAsync('chunk:12', 'streamingData', 'asbakdjghsa3248mja9794k', 'start', 720, 'end', 780, 'nextchunk', 13)
-.then((res) => {
-  console.log('RES HMSET', res);
-})
-.catch((err) => console.log(err));
-
-// redisClient.hgetall('chunk:12', (err, obj) => {
-//   if(err) {
-//     console.log('GET ERR', err);
-//   }
-//   console.log('REPLY', obj);
-// });
-
 let postPlayRequest = (contentId, userId) => {
-  return streaming.getFirstChunk(client, contentId)
+  return streaming.getFirstChunk(client, contentId, redisClient)
   .then((chunkResponse) => {
     if(chunkResponse.err) return chunkResponse;
     
@@ -55,31 +42,21 @@ let getChunkById = (chunkId, playId) => {
   return cacheLib.getCachedChunkById(redisClient, chunkId)
   .then((cachedObj) => {
     if(cachedObj.err) {
-      console.log('NO CACHE. SEARCHING DB...');
+      // console.log('NO CACHE. SEARCHING DB...');
       return streaming.getChunkById(client, chunkId)
       .then((result) => {
         if(result.err) return result;
         let secondsToUpdate = result.chunk.start;
-        return plays.updateMinutesWatchedOnPlay(client, playId, secondsToUpdate)
-        .then((status) => {
-          if(status.ok) {
-            return result;
-          }
-        })
-        .catch((err) => err);
+        cacheLib.cacheChunkById(redisClient, chunkId, result.chunk);
+        cacheLib.cacheSecondsWatched(redisClient, playId, secondsToUpdate);
+        return result;
       })
       .catch((err) => err);
     } else {
-      console.log('HIT CACHE!!!');
-      let secondsToUpdate = cachedObj.start;
-      //DUPLICATED REFACTOR!!!!!
-      return plays.updateMinutesWatchedOnPlay(client, playId, secondsToUpdate)
-      .then((status) => {
-        if(status.ok) {
-          return cachedObj;
-        }
-      })
-      .catch((err) => err);
+      // console.log('HIT CACHE!!!');
+      let secondsToUpdate = cachedObj.chunk.start;
+      cacheLib.cacheSecondsWatched(redisClient, playId, secondsToUpdate);
+      return cachedObj;
     }
   });
 }
@@ -89,6 +66,7 @@ let getChunksBySeconds = (contentId, secondMark, playId) => {
   .then((result) => {
     if(result.err) return result;
     let secondsToUpdate = result.start;
+    return result;
     return plays.updateMinutesWatchedOnPlay(client, playId, secondsToUpdate)
     .then((status) => {
       if(status.ok) {
@@ -114,10 +92,28 @@ let getPlaysFromUser = (userId) => {
   .catch((err) => err);
 }
 
+let userClosesPlayer = (playId) => {
+  return cacheLib.getCachedSecondsWatched(redisClient, playId)
+  .then((redisRes) => {
+    return redisRes;
+  })
+  .then((secondsToUpdate) => {
+    console.log('index', secondsToUpdate);
+    return plays.updateMinutesWatchedOnPlay(client, playId, secondsToUpdate)
+    .then((status) => {
+      if(status.ok) {
+        return {updated: true}
+      }
+    })
+    .catch((err) => err);
+  })
+}
+
 module.exports = {
   postPlayRequest: postPlayRequest,
   getChunkById: getChunkById,
   getChunkBySeconds: getChunksBySeconds,
   finishPlay: finishPlay,
-  getPlaysFromUser: getPlaysFromUser
+  getPlaysFromUser: getPlaysFromUser,
+  userClosesPlayer: userClosesPlayer
 }

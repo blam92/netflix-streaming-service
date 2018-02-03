@@ -1,4 +1,5 @@
-const CHUNK_SIZE = 1;
+const CHUNK_SIZE = 60;
+const cacheLib = require('./redis');
 
 let getManifest = (client, contentId) => {
   const query = 'SELECT * FROM manifest WHERE contentId = ?';
@@ -19,13 +20,14 @@ let getChunkIndexBasedOnSeconds = (seconds) => {
   return Math.floor(seconds/CHUNK_SIZE);
 }
 
-let getFirstChunk = (client, contentId) => {
+let getFirstChunk = (client, contentId, redisClient) => {
   return getManifest(client, contentId)
     .then((result) => {
       let status = contentCheck(result);
       if(status.err) {
         return status;
       }
+      cacheLib.cacheListOfChunks(redisClient, result[0].chunks);
       return result[0].chunks[0];
     })
     .catch((err) => {

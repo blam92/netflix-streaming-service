@@ -21,29 +21,31 @@ config:
     - path: "content_test.csv"
       fields: 
         - "content"
+  processor: "./artillery_functions.js"
 scenarios:
   - name: "Netflix user-flow"
     flow:
-      - loop:
-        - get:
-            url: "/unfinished?userId={{user}}"
-        count: 100
-      # - post:
-      #     url: "/plays"
-      #     json:
-      #       userId: "{{user}}"
-      #       contentId: "{{content}}"
-      #     capture:
-      #       json: "$.nextchunk"
-      #       as: "nextChunk"
       # - loop:
       #   - get:
-      #       url: "/chunks/{{chunk}}?playId={{play}}"
-      #       # capture:
-      #       #   json: "$.chunk.nextchunk"
-      #       #   as: "nextChunk"
-      #   # - think: 10
+      #       url: "/unfinished?userId={{user}}"
       #   count: 100
+      - post:
+          url: "/plays"
+          json:
+            userId: "{{user}}"
+            contentId: "{{content}}"
+          capture:
+            json: "$.nextchunk"
+            as: "nextChunk"
+      - loop:
+        - get:
+            url: "/chunks/{{nextChunk}}?playId={{play}}"
+            beforeRequest: "increaseNextChunk"
+            # capture:
+            #   json: "$.chunk.nextchunk"
+            #   as: "nextChunk"
+        # - think: 10
+        count: 100
       # - patch:
       #     url: "/plays"
       #     json:

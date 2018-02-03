@@ -47,8 +47,21 @@ let getUnfinishedPlays = (req, res) => {
   .catch((err) => err);
 };
 
+let patchSecondsWatched = (req, res) => {
+  let playId = req.query.playId;
+  if(!playId) {
+    res.status(500).json({err: 'Missing playId'});
+  }
+
+  return db.userClosesPlayer(playId)
+  .then((result) => {
+    res.json(result);
+  });
+}
+
 module.exports = {
   postPlays: postPlays,
   patchPlaysWithEndDate: patchPlaysWithEndDate,
-  getUnfinishedPlays: getUnfinishedPlays
+  getUnfinishedPlays: getUnfinishedPlays,
+  patchSecondsWatched: patchSecondsWatched
 }
