@@ -5,6 +5,7 @@ const bluebird = require('bluebird');
 bluebird.promisifyAll(redis.RedisClient.prototype);
 bluebird.promisifyAll(redis.Multi.prototype);
 const redisClient = redis.createClient();
+let inMemoryObj = require('./in_memory_obj');
 
 const plays = require('./plays');
 const streaming = require('./streaming');
@@ -39,6 +40,12 @@ let updateMinutesWatched = (client, playId, secondsToUpdate) => {
 }
 
 let getChunkById = (chunkId, playId) => {
+  let inMemoryChunk = inMemoryObj.chunks[chunkId];
+  if(inMemoryChunk) {
+    return new Promise((resolve, reject) => {
+      resolve(inMemoryChunk);
+    });
+  }
   return cacheLib.getCachedChunkById(redisClient, chunkId)
   .then((cachedObj) => {
     if(cachedObj.err) {
@@ -49,6 +56,7 @@ let getChunkById = (chunkId, playId) => {
         let secondsToUpdate = result.chunk.start;
         cacheLib.cacheChunkById(redisClient, chunkId, result.chunk);
         cacheLib.cacheSecondsWatched(redisClient, playId, secondsToUpdate);
+        inMemoryObj.chunks[chunkId] = result;
         return result;
       })
       .catch((err) => err);
@@ -56,6 +64,7 @@ let getChunkById = (chunkId, playId) => {
       // console.log('HIT CACHE!!!');
       let secondsToUpdate = cachedObj.chunk.start;
       cacheLib.cacheSecondsWatched(redisClient, playId, secondsToUpdate);
+      inMemoryObj.chunks[chunkId] = cachedObj;
       return cachedObj;
     }
   });
@@ -98,7 +107,6 @@ let userClosesPlayer = (playId) => {
     return redisRes;
   })
   .then((secondsToUpdate) => {
-    console.log('index', secondsToUpdate);
     return plays.updateMinutesWatchedOnPlay(client, playId, secondsToUpdate)
     .then((status) => {
       if(status.ok) {

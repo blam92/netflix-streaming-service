@@ -28,7 +28,6 @@ let getCachedChunkById = (redisClient, chunkId) => {
 }
 
 let cacheSecondsWatched = (redisClient, playId, secondsToUpdate) => {
-  console.log('playID', playId);
   return redisClient.hmsetAsync(`play:${playId}`, 'secondsWatched', secondsToUpdate)
   .catch((err) => console.log('err', playId, err));
 }
