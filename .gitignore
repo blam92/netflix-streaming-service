@@ -40,3 +40,4 @@ bower_components/
 database/chunks.txt
 database/manifests.txt
 database/plays.txt
+.env
