@@ -1,10 +1,10 @@
 const cassandra = require('cassandra-driver');
-const client = new cassandra.Client({ contactPoints: ['127.0.0.1'], keyspace: 'hello' });
+const client = new cassandra.Client({ contactPoints: ['192.168.99.100'], keyspace: 'hello' });
 const redis = require('redis');
 const bluebird = require('bluebird');
 bluebird.promisifyAll(redis.RedisClient.prototype);
 bluebird.promisifyAll(redis.Multi.prototype);
-const redisClient = redis.createClient();
+const redisClient = redis.createClient(6379, '192.168.99.100');
 let inMemoryObj = require('./in_memory_obj');
 
 const plays = require('./plays');
@@ -13,6 +13,17 @@ const cacheLib = require('./redis');
 
 redisClient.on('error', (err) => {
   console.log('Redis Error: ', err);
+});
+redisClient.info((err, reply) => {
+  console.log('INFO', reply);
+});
+
+client.execute('SELECT * FROM test').then((res) => {
+  console.log(res.rows);
+});
+redisClient.set('test', 'true');
+redisClient.get('test', (err, reply) => {
+  console.log(reply);
 });
 
 let postPlayRequest = (contentId, userId) => {
