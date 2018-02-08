@@ -4,15 +4,18 @@ services:
     # replace username/repo:tag with your name and image details
     image: blam92/player_app:latest
     deploy:
-      replicas: 6
-      resources:
-        limits:
-          cpus: "0.1"
-          memory: 50M
+      replicas: 2
+      # resources:
+      #   limits:
+      #     cpus: "0.1"
+      #     memory: 50M
       restart_policy:
         condition: on-failure
     ports:
       - "4000:4000"
+    environment:
+      REDIS_IP: "10.0.1.243"
+      REDIS_PORT: "6379"
     networks:
       - webnet
   visualizer:
@@ -38,75 +41,75 @@ services:
     command: redis-server --appendonly yes
     networks:
       - webnet
-  cassandra-1:
-    image: cassandra
-    deploy:
-      restart_policy:
-        condition: on-failure
-        max_attempts: 3
-        window: 120s
-    environment:
-      CASSANDRA_BROADCAST_ADDRESS: cassandra-1
-    volumes:
-    - volume1:/var/lib/cassandra
-    ports:
-    - "7000"
-    logging:
-      driver: "json-file"
-    networks:
-      default:
-  cassandra-2:
-    image: cassandra
-    deploy:
-      restart_policy:
-        condition: on-failure
-        max_attempts: 3
-        window: 120s
-    environment:
-      CASSANDRA_BROADCAST_ADDRESS: cassandra-2
-      CASSANDRA_SEEDS: cassandra-1
-    depends_on:
-      - cassandra-1
-    volumes:
-    - volume2:/var/lib/cassandra
-    ports:
-    - "7000"
-    logging:
-      driver: "json-file"
-    networks:
-      default:
-  cassandra-3:
-    image: cassandra
-    logging:
-      driver: "json-file"
-    deploy:
-      restart_policy:
-        condition: on-failure
-        max_attempts: 3
-        window: 120s
-    environment:
-      CASSANDRA_BROADCAST_ADDRESS: cassandra-3
-      CASSANDRA_SEEDS: cassandra-1
-    depends_on:
-      - cassandra-2
-    volumes:
-    - volume3:/var/lib/cassandra
-    ports:
-    - "7000"
-    networks:
-      default:
-volumes:
-  volume1:
-    external:
-        name: cassandra1-vol
-  volume2:
-    external:
-        name: cassandra2-vol
-  volume3:
-    external:
-        name: cassandra3-vol
+#   cassandra-1:
+#     image: cassandra
+#     deploy:
+#       restart_policy:
+#         condition: on-failure
+#         max_attempts: 3
+#         window: 120s
+#     environment:
+#       CASSANDRA_BROADCAST_ADDRESS: cassandra-1
+#     volumes:
+#     - volume1:/var/lib/cassandra
+#     ports:
+#     - "7000"
+#     logging:
+#       driver: "json-file"
+#     networks:
+#       default:
+#   cassandra-2:
+#     image: cassandra
+#     deploy:
+#       restart_policy:
+#         condition: on-failure
+#         max_attempts: 3
+#         window: 120s
+#     environment:
+#       CASSANDRA_BROADCAST_ADDRESS: cassandra-2
+#       CASSANDRA_SEEDS: cassandra-1
+#     depends_on:
+#       - cassandra-1
+#     volumes:
+#     - volume2:/var/lib/cassandra
+#     ports:
+#     - "7000"
+#     logging:
+#       driver: "json-file"
+#     networks:
+#       default:
+#   cassandra-3:
+#     image: cassandra
+#     logging:
+#       driver: "json-file"
+#     deploy:
+#       restart_policy:
+#         condition: on-failure
+#         max_attempts: 3
+#         window: 120s
+#     environment:
+#       CASSANDRA_BROADCAST_ADDRESS: cassandra-3
+#       CASSANDRA_SEEDS: cassandra-1
+#     depends_on:
+#       - cassandra-2
+#     volumes:
+#     - volume3:/var/lib/cassandra
+#     ports:
+#     - "7000"
+#     networks:
+#       default:
+# volumes:
+#   volume1:
+#     external:
+#         name: cassandra1-vol
+#   volume2:
+#     external:
+#         name: cassandra2-vol
+#   volume3:
+#     external:
+#         name: cassandra3-vol
 networks:
   webnet:
-  default:
-    external:
-       name: cassandra-net
+  # default:
+  #   external:
+  #      name: cassandra-net
