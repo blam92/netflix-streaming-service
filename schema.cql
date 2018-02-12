@@ -31,5 +31,3 @@ AS SELECT id, uid, contentId, startDate, endDate, secondsWatched
 FROM plays
 WHERE id IS NOT NULL AND uid IS NOT NULL
 PRIMARY KEY (uid, id);
-
-

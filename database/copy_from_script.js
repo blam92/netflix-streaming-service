@@ -13,7 +13,8 @@ for(var i = 0; i < NUMBER_OF_MANIFESTS; i++) {
     if(j === NUMBER_OF_CHUNKS_PER_MANIFEST) {
       nextChunk = '';
     }
-    fs.appendFileSync('chunks.txt', `${counter}|{streamingdata: '${streamingData}', start: ${start}, end: ${end}, nextchunk: ${nextChunk}}\n`);
+    //uncomment to create chunks
+    // fs.appendFileSync('chunks.txt', `${counter}|{streamingdata: '${streamingData}', start: ${start}, end: ${end}, nextchunk: ${nextChunk}}\n`);
     chunks.push({
         streamingdata: streamingData,
         start: start,
@@ -25,7 +26,7 @@ for(var i = 0; i < NUMBER_OF_MANIFESTS; i++) {
     end += 60;
   }
   let chunkString = JSON.stringify(chunks).replace(/"/g, "'");
-  fs.appendFileSync('manifests.txt', `${i}|${chunkString}\n`);
+  fs.appendFileSync('./manifest/m1.txt', `${i}|${chunkString}\n`);
   chunks = [];
   start = 0;
   end = 60;

@@ -39,6 +39,7 @@ let getChunkById = (client, chunkId) => {
   const query = 'SELECT * FROM chunks WHERE id = ?'
   return client.execute(query, [chunkId], {prepare: true})
   .then(result => {
+    console.log('Select chunks: ', result.rows);
     let status = contentCheck(result.rows);
     if(status.err) {
       return status;
