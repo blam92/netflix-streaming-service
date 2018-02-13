@@ -1,17 +1,17 @@
 config:
-  target: "http://127.0.0.1:4000"
+  target: "http://ec2-52-53-179-235.us-west-1.compute.amazonaws.com:4000"
   phases:
-    - duration: 10
+    - duration: 240
       arrivalRate: 10
       name: "Warm up the application"
-    - duration: 20
-      arrivalRate: 30
-      name: "Sustained max load"
+    # - duration: 60
+    #   arrivalRate: 30
+    #   name: "Sustained max load"
   payload:
     - path: "users_test.csv"
       fields:
         - "user"
-    - path: "plays_test.csv"
+    - path: "plays_test_aws.csv"
       fields:
         - "play"
     - path: "chunks_test.csv"

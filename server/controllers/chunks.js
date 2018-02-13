@@ -9,7 +9,7 @@ let getChunks = (req, res) => {
   if(!playId) {
     res.status(500).json({err: 'No parameter found. Please send a valid playId'});
   }
-
+  console.log('params: ', req.params, '\n', 'query: ', req.query);
   if(type === 'by_seconds') {
     if(!contentId) {
       res.status(500).json({err: 'No parameter found. Please send a valid contentId when requesting by seconds'});

@@ -1,10 +1,10 @@
 const cassandra = require('cassandra-driver');
-const client = new cassandra.Client({ contactPoints: [process.env.CASS_IP || '127.0.0.1'], keyspace: process.env.CASS_KS || 'hello'});
+const client = new cassandra.Client({ contactPoints: ['DC1N' || process.env.CASS_IP || '127.0.0.1'], keyspace: process.env.CASS_KS || 'hello'});
 const redis = require('redis');
 const bluebird = require('bluebird');
 bluebird.promisifyAll(redis.RedisClient.prototype);
 bluebird.promisifyAll(redis.Multi.prototype);
-const redisClient = redis.createClient(process.env.REDIS_PORT || 6379, process.env.REDIS_IP || '127.0.0.1');
+const redisClient = redis.createClient(process.env.REDIS_PORT || 6379, 'redis' || process.env.REDIS_IP || '127.0.0.1');
 let inMemoryObj = require('./in_memory_obj');
 
 const plays = require('./plays');

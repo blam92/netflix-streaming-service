@@ -30,7 +30,6 @@ let getPlaysFromUser = (client, userId) => {
   const query = `SELECT * FROM plays_by_user WHERE uid = ?`;
   return client.execute(query, [userId], {prepare: true})
   .then((result) => {
-    console.log('Plays from user ', userId, ':\n ', result.rows);
     return result.rows;
   })
   .catch((err) => {

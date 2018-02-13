@@ -3,3 +3,7 @@
 .gitignore
 .env
 node_modules
+database/chunks.txt
+database/manifests.txt
+database/plays.txt
+database/manifest
