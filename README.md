@@ -1,14 +1,12 @@
-# Project Name
+# Netflix Event Recording System
 
-The project description
+Micro-service focused on recording user interaction with media player as well as serving video chunks when requested by the client. The goal of the project is to answer the following business question:
+
+> As measured month over month, does an increase in the ratio of Original Content in a given category increase daily viewing-minutes for that category overall?
 
 ## Roadmap
 
-View the project roadmap [here](LINK_TO_DOC)
-
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
+View the project roadmap https://docs.google.com/document/d/1owxSdzR40CGqkMUdk7_7llYQYPYzX4YJzIJ7QkibtG0/edit#
 
 # Table of Contents
 
@@ -24,12 +22,9 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
 
 ## Requirements
 
-- Node 6.9.x
-- Redis 3.2.x
-- Postgresql 9.6.x
-- etc
+- Node
+- Redis
+- Cassandra
+- Express
 
-## Other Information
-
-(TODO: fill this out with details about your project. Suggested ideas: architecture diagram, schema, and any other details from your app plan that sound interesting.)
 
